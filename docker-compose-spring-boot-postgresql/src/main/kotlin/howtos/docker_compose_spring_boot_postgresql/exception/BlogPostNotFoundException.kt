@@ -1,0 +1,3 @@
+package howtos.docker_compose_spring_boot_postgresql.exception
+
+class BlogPostNotFoundException : RuntimeException()
