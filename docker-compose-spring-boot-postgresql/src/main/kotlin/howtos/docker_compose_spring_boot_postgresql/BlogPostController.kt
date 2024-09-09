@@ -3,10 +3,12 @@ package howtos.docker_compose_spring_boot_postgresql
 import howtos.docker_compose_spring_boot_postgresql.dto.BlogPostCreationRequest
 import howtos.docker_compose_spring_boot_postgresql.dto.BlogPostCreationResponse
 import howtos.docker_compose_spring_boot_postgresql.dto.SingleBlogPostFetchResponse
+import howtos.docker_compose_spring_boot_postgresql.exception.BlogPostNotFoundException
 import howtos.docker_compose_spring_boot_postgresql.service.BlogPostService
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.ErrorResponse
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -44,5 +46,18 @@ class BlogPostController(
             )
     }
 
+    @ExceptionHandler(Exception::class)
+    fun handleException(ex: Exception): ResponseEntity<ErrorResponse> {
+        return when (ex) {
+            is BlogPostNotFoundException ->
+                ResponseEntity.noContent()
+                    .build()
 
+            else -> ResponseEntity.internalServerError()
+                .body(
+                    ErrorResponse.builder(ex, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server error")
+                        .build()
+                )
+        }
+    }
 }
