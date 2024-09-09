@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://some-postgres:5432/docker-compose-spring-boot-postgresql
-    username: adminUsr
-    password: adminPswd
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update

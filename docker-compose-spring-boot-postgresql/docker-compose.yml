@@ -1,0 +1,33 @@
+services:
+  some-postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: docker-compose-spring-boot-postgresql
+      POSTGRES_USER: adminUsr
+      POSTGRES_PASSWORD: adminPswd
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+
+  spring-boot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - some-postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://some-postgres:5432/docker-compose-spring-boot-postgresql
+      SPRING_DATASOURCE_USERNAME: adminUsr
+      SPRING_DATASOURCE_PASSWORD: adminPswd
+    networks:
+      - my_network
+
+volumes:
+  postgres_data:
+networks:
+  my_network:
