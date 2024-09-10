@@ -9,6 +9,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d","docker-compose-spring-boot-postgresql", "-U", "adminUsr"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - my_network
 
@@ -19,7 +25,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - some-postgres
+      some-postgres:
+          condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://some-postgres:5432/docker-compose-spring-boot-postgresql
       SPRING_DATASOURCE_USERNAME: adminUsr
